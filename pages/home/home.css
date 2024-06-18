@@ -9,3 +9,29 @@ header {
 header button {
     width: auto;
 }
+
+ol {
+    list-style-type: none;
+    padding: 0;
+}
+
+ol li {
+    cursor: pointer;
+    background: white;
+    padding: 8px 16px;
+    border-bottom: 1px solid black;
+}
+ol li:hover {
+    opacity: 0.8;
+}
+
+ol li.closed {
+    border-left: 10px solid red;
+}
+ol li.open {
+    border-left: 10px solid green;
+}
+
+p {
+    margin: 4px 0;
+}
