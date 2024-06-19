@@ -2,13 +2,7 @@ body {
     background: rgb(190, 190, 190);
     height: 100vh;
 }
-header {
-    text-align: right;
-}
 
-header button {
-    width: auto;
-}
 
 ol {
     list-style-type: none;

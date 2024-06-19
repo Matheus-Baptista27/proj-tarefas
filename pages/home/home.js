@@ -6,12 +6,33 @@ function logout() {
     })
 }
 
-findTasks();
+firebase.auth().onAuthStateChanged(user => {
+    if (user){
+        findTasks(user);
+    }
+})
 
-function findTasks () {
-    setTimeout(() => {
-        addTasksToScreen(fakeTasks);
-    }, 1000)
+function newTask() {
+    window.location.href = "../task/task.html";
+}
+
+function findTasks (user) {
+    showLoading();
+    firebase.firestore()
+        .collection('tasks')
+        .where('user.uid','==',user.uid)
+        .orderBy('date','desc')
+        .get()
+        .then(snapshot => {
+            hideLoading();
+            const tasks = snapshot.docs.map(doc => doc.data());
+            addTasksToScreen(tasks);
+        })
+        .catch(error => {
+            hideLoading();
+            console.log(error);
+            alert('Erro ao recuperar transacoes');
+        })
 }
 function addTasksToScreen(tasks) {
     const orderedList = document.getElementById('tasks');
@@ -43,30 +64,3 @@ function addTasksToScreen(tasks) {
 function formatDate(date) {
     return new Date(date).toLocaleDateString('pt-br');
 }
-
-const fakeTasks = [
-    {
-    type: 'open',
-    date: '2024-01-04',
-    taskType: 'Descrição da Tarefa',
-    description: 'Alguma descrição'
-},
-{
-    type: 'closed',
-    date: '2024-01-03',
-    taskType: 'Jogar bola com os amigos',
-    description: ''
-},
-{
-    type: 'open',
-    date: '2024-01-02',
-    taskType: 'Ir na academia X vezes',
-    description: 'Alguma descrição 2'
-},
-{
-    type: 'closed',
-    date: '2024-01-01',
-    taskType: 'Descansar bastante',
-    description: ''
-}
-]
