@@ -92,7 +92,10 @@ function findTasks(user) {
         .get()
         .then(snapshot => {
             hideLoading();
-            const tasks = snapshot.docs.map(doc => doc.data());
+            const tasks = snapshot.docs.map(doc => ({ 
+                ...doc.data(),
+            uid: doc.id
+        }));
             addTasksToScreen(tasks);
         })
         .catch(error => {
@@ -107,8 +110,17 @@ function addTasksToScreen(tasks) {
     orderedList.innerHTML = ''; 
 
     tasks.forEach(task => {
+        console.log(task);
         const li = document.createElement('li');
         li.classList.add(task.type === 'closed' ? 'closed' : 'open');
+        li.addEventListener('click', () => {
+            window.location.href = "../task/task.html?uid=" + task.uid;
+        })
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = "Remover";
+        deleteButton.classList.add('outline', 'danger');
+        li.appendChild(deleteButton);
 
         const date = document.createElement('p');
         date.innerHTML = formatDate(task.date);

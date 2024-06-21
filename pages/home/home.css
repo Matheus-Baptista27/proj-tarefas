@@ -103,6 +103,12 @@ button.fab {
     box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
+button.danger {
+    width: min-content;
+    position: relative;
+
+}
+
 button.fab:hover {
     background: #555;
 }

@@ -18,6 +18,11 @@
     border-color: rgb(219, 214, 214);
 }
 
+.outline.danger {
+    color: red;
+    border-color: red;
+}
+
 .outline {
     background: transparent;
     color: white;
