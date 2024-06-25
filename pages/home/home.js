@@ -1,70 +1,3 @@
-/*function logout() {
-    firebase.auth().signOut().then(() => {
-        window.location.href = "../../index.html";
-    }).catch(() => {
-        alert('Erro ao fazer logout');
-    })
-}
-
-firebase.auth().onAuthStateChanged(user => {
-    if (user){
-        findTasks(user);
-    }
-})
-
-function newTask() {
-    window.location.href = "../task/task.html";
-}
-
-function findTasks (user) {
-    showLoading();
-    firebase.firestore()
-        .collection('tasks')
-        .where('user.uid','==', user.uid)
-        .orderBy('date', 'desc')
-        .get()
-        .then(snapshot => {
-            hideLoading();
-            const tasks = snapshot.docs.map(doc => doc.data());
-            addTasksToScreen(tasks);
-        })
-        .catch(error => {
-            hideLoading();
-            console.log(error);
-            alert('Erro ao recuperar tarefas');
-        })
-}
-function addTasksToScreen(tasks) {
-    const orderedList = document.getElementById('tasks');
-
-    tasks.forEach(task => {
-        const li = document.createElement('li');
-        li.classList.add(task.type);
-
-        const date = document.createElement('p');
-        date.innerHTML = formatDate(task.date);
-        li.appendChild(date);
-
-        const type = document.createElement('p');
-        type.innerHTML = task.taskType;
-        li.appendChild(type);
-
-        if (task.description) {
-            const description = document.createElement('p');
-            description.innerHTML = task.description;
-            li.appendChild(description);
-        }
-
-        orderedList.appendChild(li);
-    });
-    
-}
-
-
-function formatDate(date) {
-    return new Date(date).toLocaleDateString('pt-br');
-}*/
-
 function logout() {
     firebase.auth().signOut().then(() => {
         window.location.href = "../../index.html";
@@ -85,17 +18,9 @@ function newTask() {
 
 function findTasks(user) {
     showLoading();
-    firebase.firestore()
-        .collection('tasks')
-        .where('user.uid', '==', user.uid)
-        .orderBy('date', 'desc')
-        .get()
-        .then(snapshot => {
+    TaskService.findByUser(user)
+        .then(tasks => {
             hideLoading();
-            const tasks = snapshot.docs.map(doc => ({ 
-                ...doc.data(),
-            uid: doc.id
-        }));
             addTasksToScreen(tasks);
         })
         .catch(error => {
@@ -107,50 +32,71 @@ function findTasks(user) {
 
 function addTasksToScreen(tasks) {
     const orderedList = document.getElementById('tasks');
-    orderedList.innerHTML = ''; 
+    orderedList.innerHTML = '';
 
     tasks.forEach(task => {
-        console.log(task);
-        const li = document.createElement('li');
-        li.classList.add(task.type === 'closed' ? 'closed' : 'open');
-        li.addEventListener('click', () => {
-            window.location.href = "../task/task.html?uid=" + task.uid;
-        })
+        const li = createTaskListItem(task);
+        li.appendChild(createDeleteButton(task));
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerHTML = "Remover";
-        deleteButton.classList.add('outline', 'danger');
-        li.appendChild(deleteButton);
-
-        const date = document.createElement('p');
-        date.innerHTML = formatDate(task.date);
-        li.appendChild(date);
-
-        const type = document.createElement('p');
-        type.innerHTML = task.taskType;
-        li.appendChild(type);
-
+        li.appendChild(createParagraph(formatDate(task.date)));
+        li.appendChild(createParagraph(task.type));
         if (task.description) {
-            const description = document.createElement('p');
-            description.innerHTML = task.description;
-            li.appendChild(description);
+            li.appendChild(createParagraph(task.description));
         }
 
         orderedList.appendChild(li);
     });
 }
 
+function createTaskListItem(task) {
+    const li = document.createElement('li');
+        li.classList.add(task.type === 'closed' ? 'closed' : 'open');
+        li.id = task.uid;
+        li.addEventListener('click', () => {
+            window.location.href = "../task/task.html?uid=" + task.uid;
+        })
+        return li;
+}
+
+function createDeleteButton(task) {
+    const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = "Remover";
+        deleteButton.classList.add('outline', 'danger');
+        deleteButton.addEventListener('click', event => {
+            event.stopPropagation();
+            askRemoveTask(task);
+        })
+        return deleteButton;
+}
+
+function createParagraph(value) {
+        const element = document.createElement('p');
+        element.innerHTML = value;
+        return element;    
+}
+
+function askRemoveTask(task) {
+    const shouldRemove = confirm('Deseja remover a Tarefa?');
+    if (shouldRemove) {
+        removeTask(task);
+    }
+}
+
+function removeTask(task) {
+    showLoading();
+
+    TaskService.remove(task)
+        .then(() => {
+            hideLoading();
+            document.getElementById(task.uid).remove();
+        })
+        .catch(error => {
+            hideLoading();
+            console.log(error);
+            alert('Erro ao remover tarefa');
+        });
+}
+
 function formatDate(date) {
     return new Date(date).toLocaleDateString('pt-BR');
 }
-
-/*function showLoading() {
-    
-    console.log('Loading...');
-}
-
-function hideLoading() {
-    
-    console.log('Loading finished.');
-}*/
-

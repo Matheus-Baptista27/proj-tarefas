@@ -1,6 +1,7 @@
-/*body {
+body {
     background:  rgb(190, 190, 190);
     height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 ol {
@@ -27,9 +28,17 @@ ol li.open {
 
 p {
     margin: 4px 0;
-}*/
+}
 
-body {
+/*ol li:hover button.danger {
+    display: block;
+}*/
+button.danger {
+    width: auto;
+    float: right;
+    /*display: none;*/
+}
+/*body {
     background: rgb(190, 190, 190);
     height: 100vh;
     margin: 0;
@@ -111,4 +120,4 @@ button.danger {
 
 button.fab:hover {
     background: #555;
-}
+}*/
