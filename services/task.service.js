@@ -1,6 +1,29 @@
 const TaskService = {
     findByUser: user => {
-        return firebase.firestore()
+        return new Promise(async (resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open(
+                "GET",
+                "http://localhost:3000/tasks",
+                true
+            );
+
+            xhr.setRequestHeader('Authorization', await firebase.auth().currentUser.getIdToken())
+
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4) {
+                    if (this.status != 200) {
+                        reject(this.responseText);
+                    }
+                    console.log(this.responseText);
+                }
+            };
+
+            xhr.send();
+        }) 
+    },
+    /*return firebase.firestore()
             .collection('tasks')
             .where('user.uid', '==', user.uid)
             .orderBy('date', 'desc')
@@ -10,9 +33,7 @@ const TaskService = {
                     ...doc.data(),
                     uid: doc.id
                 }));
-            });
-    },
-
+            });*/ 
     findByUid: uid => {
         return firebase.firestore()
             .collection("tasks")

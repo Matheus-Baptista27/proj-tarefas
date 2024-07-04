@@ -17,6 +17,7 @@ nav ul li {
     margin: 0 10px;
 }
 
+
 nav ul li a {
     color: white;
     text-decoration: none;
@@ -24,15 +25,18 @@ nav ul li a {
     transition: background 0.3s;
 }
 
+
 nav ul li a:hover {
     background: rgb(212, 211, 211);
     border-radius: 5px;
 }
 
+
 ol {
     list-style-type: none;
     padding: 0;
 }
+
 
 ol li {
     cursor: pointer;
@@ -43,6 +47,7 @@ ol li {
 ol li:hover {
     opacity: 0.8;
 }
+
 
 ol li.closed {
     border-left: 10px solid rgb(85, 85, 85);
